@@ -95,8 +95,8 @@
     <button class="btn-volcano" onclick="volcanoEruption()"> 🌋 Éruption / Secousse !</button>
 
     <script>
-        // Configuration des prix (Min: 1, Max: 4)
-        const minPrice = 1;
+        // Configuration des prix (Min: 0, Max: 4)
+        const minPrice = 0;
         const maxPrice = 4;
         let turn = 1;
 
@@ -159,10 +159,10 @@
 
             if (isBoom) {
                 minerals[targetIndex].price = maxPrice;
-                alert(`🌋 SECOUSSE : Le cours du ${minerals[targetIndex].name} S'ENVOLE au maximum (4 💰) !`);
+                alert(`🌋 SECOUSSE : Le cours du ${minerals[targetIndex].name} S'ENVOLE au maximum 💰 !`);
             } else {
                 minerals[targetIndex].price = minPrice;
-                alert(`🌋 SECOUSSE : Le cours du ${minerals[targetIndex].name} S'EFFONDRE au minimum (1 💰) !`);
+                alert(`🌋 SECOUSSE : Le cours du ${minerals[targetIndex].name} S'EFFONDRE au minimum  !`);
             }
 
             renderMarket();
