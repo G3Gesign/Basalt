@@ -3,13 +3,16 @@
   "name": "Basalt - la bourse du minerai",
   "short_name": "Basalt",
   "start_url": ".",
+  "scope": "/Basalt/",
   "display": "standalone",
   "background_color": "#1a1a1a",
+  "theme_color": "#1a1a1a",
   "icons": [
     {
       "src": "app-icon.png",
       "sizes": "512x512",
       "type": "image.png"
+      "purpose": "any maskable"
     }]
 }
   
