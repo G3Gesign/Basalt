@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BASALT - La Bourse du Volcan</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 { margin-top: 0; color: #ff5722; text-transform: uppercase; letter-spacing: 2px; }
+        .turn-info { font-size: 1.2rem; margin-bottom: 20px; color: #aaa; }
+        .market-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 420px;
+        }
+        @media (min-width: 600px) {
+            .market-container {
+                grid-template-columns: repeat(3, 1fr);
+                max-width: 600px;
+            }
+        }
+        .card {
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-left: 8px solid;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .card.Jaune { border-color: #fdd835; }
+        .card.Rouge { border-color: #e53935; }
+        .card.Bleu { border-color: #1e88e5; }
+        .card.Vert { border-color: #43a047; }
+        .card.Violet { border-color: #8e24aa; }
+        .card.Rose { border-color: #ec407a; }
+
+        .color-name { font-weight: bold; font-size: 1.1rem; margin-bottom: 5px; }
+        .price { font-size: 1.8rem; font-weight: bold; color: #fff; margin: 8px 0; }
+        .controls { display: flex; gap: 8px; }
+        button {
+            background-color: #444;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        button:active { transform: scale(0.95); }
+        .btn-sell { background-color: #d32f2f; }
+        .btn-next {
+            margin-top: 20px;
+            background-color: #ff5722;
+            font-size: 1.1rem;
+            padding: 12px 24px;
+            border-radius: 25px;
+            width: 100%;
+            max-width: 420px;
+        }
+        .btn-volcano {
+            margin-top: 10px;
+            background-color: #6a1b9a;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>BASALT</h1>
+    <div class="turn-info">Tour de Jeu : <span id="turn-count">1</span></div>
+
+    <div class="market-container" id="market"></div>
+
+    <button class="btn-next" onclick="nextTurn()"> Fin du Tour (Fluctuation) </button>
+    <button class="btn-volcano" onclick="volcanoEruption()"> 🌋 Éruption / Secousse !</button>
+
+    <script>
+        // Configuration des prix (Min: 1, Max: 4)
+        const minPrice = 1;
+        const maxPrice = 4;
+        let turn = 1;
+
+        const minerals = [
+            { name: 'Jaune', price: 2, class: 'Jaune' },
+            { name: 'Rouge', price: 2, class: 'Rouge' },
+            { name: 'Bleu', price: 2, class: 'Bleu' },
+            { name: 'Vert', price: 2, class: 'Vert' },
+            { name: 'Violet', price: 3, class: 'Violet' },
+            { name: 'Rose', price: 3, class: 'Rose' }
+        ];
+
+        function renderMarket() {
+            const container = document.getElementById('market');
+            container.innerHTML = '';
+
+            minerals.forEach((m, index) => {
+                const card = document.createElement('div');
+                card.className = `card ${m.class}`;
+                card.innerHTML = `
+                    <div class="color-name">${m.name}</div>
+                    <div class="price">${m.price} 💰</div>
+                    <div class="controls">
+                        <button class="btn-sell" onclick="sellMineral(${index})">Vendre (-1)</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            document.getElementById('turn-count').innerText = turn;
+        }
+
+        function sellMineral(index) {
+            if (minerals[index].price > minPrice) {
+                minerals[index].price--;
+                renderMarket();
+            }
+        }
+
+        // Fluctuation douce en fin de tour (-1, 0, ou +1)
+        function nextTurn() {
+            turn++;
+            minerals.forEach(m => {
+                const change = Math.floor(Math.random() * 3) - 1; 
+                m.price = Math.min(maxPrice, Math.max(minPrice, m.price + change));
+            });
+            renderMarket();
+        }
+
+        // Mode Secousse retravaillé : Gros choc boursier
+        function volcanoEruption() {
+            // Étape 1 : Mélange fort pour tout le monde (-3 à +3)
+            minerals.forEach(m => {
+                const shock = Math.floor(Math.random() * 7) - 3; 
+                m.price = Math.min(maxPrice, Math.max(minPrice, m.price + shock));
+            });
+
+            // Étape 2 : Un minerai au hasard subit un Boom ou un Crash total
+            const targetIndex = Math.floor(Math.random() * minerals.length);
+            const isBoom = Math.random() > 0.5;
+
+            if (isBoom) {
+                minerals[targetIndex].price = maxPrice;
+                alert(`🌋 SECOUSSE : Le cours du ${minerals[targetIndex].name} S'ENVOLE au maximum (4 💰) !`);
+            } else {
+                minerals[targetIndex].price = minPrice;
+                alert(`🌋 SECOUSSE : Le cours du ${minerals[targetIndex].name} S'EFFONDRE au minimum (1 💰) !`);
+            }
+
+            renderMarket();
+        }
+
+        renderMarket();
+    </script>
+</body>
+</html>
